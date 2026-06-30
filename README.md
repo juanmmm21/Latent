@@ -1,58 +1,126 @@
-# Latent — El "Segundo Cerebro" Semántico 
+<p align="center">
+  <img src="assets/icon.png" alt="Latent" width="120" height="120" />
+</p>
 
-**Latent** es un sistema de Gestión de Conocimiento Personal (PKM) *Local-First* centrado en la privacidad absoluta. A diferencia de las aplicaciones de notas tradicionales que dependen de carpetas rígidas o enlaces manuales, Latent utiliza Inteligencia Artificial local para estructurar tus pensamientos en un gráfico de conocimiento dinámico y permitirte interactuar con ellos mediante lenguaje natural.
+<h1 align="center">Latent</h1>
 
->  **Privacidad Total:** Todo el procesamiento, desde la generación de embeddings vectoriales hasta la búsqueda y encriptación, se ejecuta de forma local en el dispositivo. Ningún byte de tus notas sale de tu iPhone o iPad.
+<p align="center">
+  <strong>Tu segundo cerebro, en el iPhone. Privado. Local. Semántico.</strong>
+</p>
 
----
+<p align="center">
+  <a href="#características">Características</a> ·
+  <a href="#privacidad">Privacidad</a> ·
+  <a href="#requisitos">Requisitos</a> ·
+  <a href="#descarga">Descarga</a>
+</p>
 
-##  Características Principales y Arquitectura Técnica
-
-### 1. Búsqueda Vectorial Local y Chat Semántico (InferenceEngine) 
-- **Procesamiento de Embeddings Local:** Integra un modelo de representación vectorial cuantizado (como `all-MiniLM-L6-v2`) convertido a **CoreML** (peso inferior a 50MB) para mapear textos a vectores de 384 dimensiones.
-- **Background Tasks:** Las notas se vectorizan de forma asíncrona en segundo plano mediante las `.backgroundTask` de SwiftUI, garantizando que la escritura sea fluida y sin latencia.
-- **Accelerate Framework (vDSP):** Para responder búsquedas semánticas al instante, se ejecuta la similitud de coseno sobre miles de vectores en paralelo utilizando instrucciones vectoriales SIMD de bajo nivel directamente en la CPU/GPU del dispositivo.
-
-### 2. Base de Datos Modular y Híbrida (CoreDataLayer) 
-- **SwiftData y CloudKit:** Sincronización automática a través de iCloud.
-- **Relaciones Blandas (Soft Links):** Para evitar la saturación del motor de sincronización de CloudKit con miles de relaciones pequeñas, las notas implementan enlaces dinámicos mediante análisis de UUIDs en tiempo de ejecución.
-- **Fusión Libre de Conflictos (CRDT):** Detección y fusión inteligente de conflictos en ediciones simultáneas sin conexión mediante el monitoreo de eventos de sincronización.
-
-### 3. Seguridad de Nivel Fintech 
-- **Cifrado en Reposo:** Todo el contenido de las notas se cifra de extremo a extremo utilizando **CryptoKit** (algoritmo ChaCha20-Poly1305).
-- **Secure Enclave:** Las claves simétricas de encriptación se derivan y protegen utilizando el Secure Enclave del dispositivo mediante autenticación biométrica (Face ID / Touch ID) o el código de acceso.
-
-### 4. Interfaz Premium e Interactiva (AppFeatureModules) 
-- **Visualizador de Gráfico:** Renderizado interactivo de un gráfico dirigido por fuerzas (force-directed graph) implementado mediante **SwiftUI Canvas / Metal**, optimizado para renderizar cientos de nodos a **120Hz** sin caídas de frames.
-- **Editor de Texto con TextKit 2:** Un editor de Markdown personalizado desarrollado envolviendo `UITextView` para un control total sobre el renderizado de enlaces dinámicos (wiki-links) y resaltado de sintaxis personalizado.
+<p align="center">
+  <!-- Sustituye el enlace cuando la app esté en App Store -->
+  <a href="https://apps.apple.com/app/latent/6786011834">
+    <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Descargar en el App Store" height="48" />
+  </a>
+</p>
 
 ---
 
-##  Stack Tecnológico
+## Qué es Latent
 
-- **Lenguaje:** Swift 6 (Strict Concurrency)
-- **UI:** SwiftUI, Metal, UIKit (TextKit 2)
-- **Persistencia:** SwiftData, CloudKit
-- **Matemáticas & IA:** CoreML, NaturalLanguage, Accelerate Framework (vDSP)
-- **Criptografía:** CryptoKit, Security (Keychain)
-- **Arquitectura:** Arquitectura Modular con Swift Package Manager (SPM)
+**Latent** es una app de gestión de conocimiento personal (PKM) pensada para quien quiere **pensar, escribir y recuperar ideas** sin depender de la nube para la inteligencia artificial.
 
----
+Escribes notas con un editor completo, las conectas con menciones `@`, exploras cómo se relacionan en un **grafo de conocimiento** y les preguntas en lenguaje natural: la app recupera el contexto relevante y **Apple Intelligence** responde **en tu dispositivo**.
 
-##  Estructura del Proyecto
-
-El proyecto está diseñado de forma modular para garantizar un bajo acoplamiento y facilitar el mantenimiento o la escalabilidad:
-
-```
-Latent/
-├── Docs/                  # Documentación de diseño y especificaciones
-├── LatentApp/             # Aplicación principal (iOS Wrapper e Interfaces principales)
-└── Packages/              # Módulos de funcionalidad aislados (Swift Packages)
-    ├── CoreDataLayer      # Persistencia, cifrado y CloudKit
-    ├── InferenceEngine    # Envoltorio CoreML, tokenizador y motor matemático vDSP
-    └── AppFeatureModules  # Módulos de UI (Editor, Visualizador de Gráfico, Búsqueda)
-```
+Sin servidores de IA. Sin enviar tus notas a terceros para generar respuestas.
 
 ---
 
-*Nota: Este repositorio público actúa como escaparate y documentación del diseño arquitectónico de la aplicación. El código fuente completo se mantiene en un repositorio privado de desarrollo.*
+## Características
+
+### Notas que se entienden entre sí
+Editor rich text con formato persistente, menciones `@` entre notas y vista previa limpia. Organiza por enlaces y significado, no por carpetas rígidas.
+
+### Búsqueda semántica
+Encuentra ideas por intención, no solo por palabras exactas. Un modelo de embeddings multilingüe corre en el **Neural Engine** del iPhone.
+
+### Grafo de conocimiento
+Visualiza enlaces explícitos entre notas y conexiones descubiertas por similitud semántica. Un mapa vivo de tu pensamiento.
+
+### Chat con tu biblioteca
+Pregunta sobre lo que has escrito. Latent combina recuperación híbrida (léxica + vectorial) con generación on-device vía **Apple Intelligence**, con citas a las notas fuente.
+
+### Privacidad por diseño
+- Cifrado **ChaCha20-Poly1305** en reposo  
+- Claves en el **Keychain** del dispositivo  
+- Sincronización opcional de notas con **tu iCloud privado** (el chat no se sincroniza)  
+- Importación de PDFs para ampliar tu base de conocimiento  
+
+### Hecha para el sistema
+- Tema claro, oscuro o automático  
+- Interfaz en **19 idiomas** (sigue el idioma del iPhone)  
+- Diseño nativo con SwiftUI  
+
+---
+
+## Privacidad
+
+Latent está construida con un principio simple: **tu conocimiento es tuyo**.
+
+| Qué | Dónde ocurre |
+|-----|----------------|
+| Embeddings y búsqueda | En el iPhone |
+| Generación de respuestas del chat | Apple Intelligence, on-device |
+| Notas (opcional) | Tu contenedor iCloud privado, cifrado en el dispositivo antes de guardar |
+| Tracking o analítica de contenido | No |
+
+No vendemos datos. No entrenamos modelos con tus notas.
+
+---
+
+## Requisitos
+
+- **iOS 26** o posterior  
+- **Apple Intelligence** activo en un dispositivo compatible  
+- Chip **A17 Pro** o superior (p. ej. iPhone 15 Pro en adelante), según disponibilidad regional de Apple Intelligence  
+
+> Latent comprueba en tiempo de ejecución que Apple Intelligence esté disponible. Si no lo está, la app muestra cómo activarlo o qué dispositivos son compatibles.
+
+---
+
+## Capturas
+
+
+<p align="center">
+  <img src="assets/notas.jpeg" width="220" alt="Notas" />
+  <img src="assets/grafo.jpeg" width="220" alt="Grafo" />
+  <img src="assets/chat.jpeg" width="220" alt="Chat" />
+</p>
+
+---
+
+## Descarga
+
+Disponible en el **App Store** para iPhone y iPad.
+
+<!-- Actualiza el ID cuando publiques -->
+**[Descargar Latent en el App Store](https://apps.apple.com/app/latent/6786011834)**
+
+---
+
+## Sobre este repositorio
+
+Este repositorio es un **escaparate del producto**. El código fuente de Latent no es público: aquí encontrarás documentación de producto, recursos de marca y novedades de versiones.
+
+Si te interesa el trabajo detrás de la app — arquitectura RAG on-device, integración con Foundation Models, PKM local-first — puedes seguir el proyecto o contactar al autor.
+
+---
+
+## Autor
+
+**Juan Martos**  
+[GitHub](https://github.com/juanmmm21) · [App Store](https://apps.apple.com/app/latent/6786011834)
+
+---
+
+<p align="center">
+  <sub>Latent © Juan Martos. Apple, iPhone, iCloud, Apple Intelligence y App Store son marcas de Apple Inc.</sub>
+</p>
